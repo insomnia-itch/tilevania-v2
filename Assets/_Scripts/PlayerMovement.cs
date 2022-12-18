@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     Animator anim;
     [SerializeField] float runSpeed = 10f;
+    [SerializeField] float jumpSpeed = 17.5f;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -23,6 +24,13 @@ public class PlayerMovement : MonoBehaviour
 
     void OnMove(InputValue value) {
         moveInput = value.Get<Vector2>();
+    }
+
+    void OnJump(InputValue value) {
+        if (value.isPressed)
+        {
+            rb.velocity += new Vector2(0f, jumpSpeed);   
+        }
     }
 
     void Run() {
