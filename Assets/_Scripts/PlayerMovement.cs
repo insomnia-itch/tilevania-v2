@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     Animator anim;
     float startingGravity;
+    bool isAlive = true;
     CapsuleCollider2D bodyCollider;
     BoxCollider2D feetCollider;
 
@@ -26,12 +27,17 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!isAlive)
+            return;
         Run();
         FlipSprite();
         ClimbLadder();
+        Die();
     }
 
     void OnMove(InputValue value) {
+        if (!isAlive)
+            return;
         moveInput = value.Get<Vector2>();
     }
 
@@ -74,5 +80,11 @@ public class PlayerMovement : MonoBehaviour
         //  decide if you want horizontal movement on ladder to be possible
         bool climbing = Mathf.Abs(rb.velocity.y) > Mathf.Epsilon;
         anim.SetBool("isClimbing", climbing);
+    }
+
+    void Die() {
+        LayerMask enemyLayer = LayerMask.GetMask("Enemy");
+        if (bodyCollider.IsTouchingLayers(enemyLayer))
+            isAlive = false;
     }
 }
