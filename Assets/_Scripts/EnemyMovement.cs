@@ -19,7 +19,8 @@ public class EnemyMovement : MonoBehaviour
 
     void FlipSprite() {
         float currentSign = Mathf.Sign(rb.velocity.x);
-        transform.localScale = new Vector2(-currentSign, 1f);
+        float currentXScale = Mathf.Abs(transform.localScale.x);
+        transform.localScale = new Vector2(-currentSign * currentXScale, transform.localScale.y);
     }
 
     void OnTriggerExit2D(Collider2D other) {
