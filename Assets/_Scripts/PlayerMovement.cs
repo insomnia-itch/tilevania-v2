@@ -37,6 +37,13 @@ public class PlayerMovement : MonoBehaviour
         FlipSprite();
         ClimbLadder();
         Die();
+
+        LayerMask groundLayer = LayerMask.GetMask("Ground");
+        bool isJumping = anim.GetBool("isJumping");
+        if (feetCollider.IsTouchingLayers(groundLayer) && isJumping)
+        {
+            anim.SetBool("isJumping", false);
+        }
     }
 
     void OnMove(InputValue value) {
@@ -57,7 +64,8 @@ public class PlayerMovement : MonoBehaviour
             return;
         if (value.isPressed)
         {
-            rb.velocity += new Vector2(0f, jumpSpeed);   
+            rb.velocity += new Vector2(0f, jumpSpeed);
+            anim.SetBool("isJumping", true);
         }
     }
 
