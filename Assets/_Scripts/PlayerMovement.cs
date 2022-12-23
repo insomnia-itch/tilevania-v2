@@ -38,12 +38,13 @@ public class PlayerMovement : MonoBehaviour
         ClimbLadder();
         Die();
 
-        LayerMask groundLayer = LayerMask.GetMask("Ground");
-        bool isJumping = anim.GetBool("isJumping");
-        if (feetCollider.IsTouchingLayers(groundLayer) && isJumping)
-        {
-            anim.SetBool("isJumping", false);
-        }
+        // LayerMask groundLayer = LayerMask.GetMask("Ground");
+        // bool isJumping = anim.GetBool("isJumping");
+        // Debug.Log(isJumping);
+        // if (feetCollider.IsTouchingLayers(groundLayer) && isJumping)
+        // {
+        //     anim.SetBool("isJumping", false);
+        // }
     }
 
     void OnMove(InputValue value) {
@@ -66,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity += new Vector2(0f, jumpSpeed);
             anim.SetBool("isJumping", true);
+            StartCoroutine(Jump());
         }
     }
 
@@ -108,5 +110,10 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = deathKick;
             FindObjectOfType<GameSession>().ProcessPlayerDeath();
         }
+    }
+
+    IEnumerator Jump() {
+        yield return new WaitForSecondsRealtime(0.5f);
+        anim.SetBool("isJumping", false);
     }
 }
