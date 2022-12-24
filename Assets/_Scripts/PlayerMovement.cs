@@ -13,8 +13,14 @@ public class PlayerMovement : MonoBehaviour
     CapsuleCollider2D bodyCollider;
     BoxCollider2D feetCollider;
 
+    // for dashing 
+    Vector2 savedVelocity;
+    bool canDash = true;
+
     [SerializeField] float runSpeed = 10f;
     [SerializeField] float jumpSpeed = 17.5f;
+    [SerializeField] float dashSpeed = 2f;
+    [SerializeField] float dashCoolDown = 0f;
     [SerializeField] float climbSpeed = 5f;
     [SerializeField] Vector2 deathKick = new Vector2(20f, 20f);
     [SerializeField] GameObject bullet;
@@ -37,14 +43,6 @@ public class PlayerMovement : MonoBehaviour
         FlipSprite();
         ClimbLadder();
         Die();
-
-        // LayerMask groundLayer = LayerMask.GetMask("Ground");
-        // bool isJumping = anim.GetBool("isJumping");
-        // Debug.Log(isJumping);
-        // if (feetCollider.IsTouchingLayers(groundLayer) && isJumping)
-        // {
-        //     anim.SetBool("isJumping", false);
-        // }
     }
 
     void OnMove(InputValue value) {
@@ -63,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
         LayerMask groundLayer = LayerMask.GetMask("Ground");
         if (!feetCollider.IsTouchingLayers(groundLayer))
             return;
-        if (value.isPressed)
+        if (value.isPressed && !anim.GetBool("isDashing"))
         {
             rb.velocity += new Vector2(0f, jumpSpeed);
             anim.SetBool("isJumping", true);
@@ -71,11 +69,66 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void OnDash(InputValue value) {
+        bool s = anim.GetBool("isDashing");
+        if (dashCoolDown > 0)
+        {
+            canDash = false;
+            // dashCoolDown -= Time.deltaTime;
+            dashCoolDown = 0f;
+        }
+        else
+        {
+            anim.SetBool("isDashing", false);
+            canDash = true;
+        }
+        // Debug.Log(value.isPressed);
+        // Debug.Log(dashCoolDown);
+        // Debug.Log(canDash);
+        if (canDash && value.isPressed)
+        {
+            Debug.Log("Should trigger DASh");
+            anim.SetBool("isDashing", true);
+            savedVelocity = rb.velocity;
+            Debug.Log(savedVelocity);
+            float sign = 0;
+            if (transform.localScale.x > 0)
+            {
+                sign = 1;
+            } else
+            {
+                sign = -1;
+            }
+            moveInput = new Vector2(sign * 1.5f, rb.velocity.y);
+            // Debug.Log(rb.velocity);
+            dashCoolDown = 0f;
+            StartCoroutine(Dash());
+            rb.velocity = new Vector2(0f, rb.velocity.y);
+        }
+        // if (value.isPressed) {
+        //     Debug.Log(rb.velocity);
+        //     float min = moveInput.x;
+        //     if (min == 0)
+        //         min = 1f;
+        //     Vector2 playerVelocity = new Vector2(min * dashSpeed, rb.velocity.y);
+        //     rb.velocity = playerVelocity;
+        //     Debug.Log(rb.velocity);
+        //     anim.SetBool("isDashing", true);
+        //     // Dash();
+        //     StartCoroutine(Dash());
+        // }
+        
+        // rb.velocity =  new Vector2(rb.velocity.x*3f, rb.velocity.y);
+
+    }
+
     void Run() {
         Vector2 playerVelocity = new Vector2(moveInput.x * runSpeed, rb.velocity.y);
         rb.velocity = playerVelocity;
-
-        bool moving = Mathf.Abs(rb.velocity.x) > Mathf.Epsilon;
+        Debug.Log(moveInput.x);
+        Debug.Log(anim.GetBool("isRunning"));
+        Debug.Log("_____2");
+        bool moving = Mathf.Abs(rb.velocity.x) > Mathf.Epsilon && !anim.GetBool("isDashing");
         anim.SetBool("isRunning", moving);
     }
 
@@ -115,5 +168,16 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator Jump() {
         yield return new WaitForSecondsRealtime(0.5f);
         anim.SetBool("isJumping", false);
+    }
+
+    IEnumerator Dash() {
+        yield return new WaitForSecondsRealtime(0.25f);
+        anim.SetBool("isDashing", false);
+        rb.velocity = new Vector2(0f, rb.velocity.y);
+        Debug.Log("AFTER DASH v:");
+        Debug.Log(rb.velocity);
+        Debug.Log(anim.GetBool("isRunning"));
+        Debug.Log("_____");
+        moveInput.x = 0f;
     }
 }

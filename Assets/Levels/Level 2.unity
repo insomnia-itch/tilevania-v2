@@ -34186,6 +34186,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6332945843176731472, guid: 737247aac01465d4e9142bc5192bd4b5, type: 3}
+      propertyPath: dashSpeed
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7698988102488076058, guid: 737247aac01465d4e9142bc5192bd4b5, type: 3}
       propertyPath: m_Name
       value: Player
@@ -34261,7 +34265,7 @@ PrefabInstance:
       objectReference: {fileID: 2039600694}
     - target: {fileID: 8543460879914917750, guid: a8892d4e4400f90439fa0f1a3c754ec8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.25752
+      value: -16.257704
       objectReference: {fileID: 0}
     - target: {fileID: 8543460879914917750, guid: a8892d4e4400f90439fa0f1a3c754ec8, type: 3}
       propertyPath: m_LocalPosition.y
