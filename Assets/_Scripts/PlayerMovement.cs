@@ -75,7 +75,6 @@ public class PlayerMovement : MonoBehaviour
         {
             canDash = false;
             // dashCoolDown -= Time.deltaTime;
-            dashCoolDown = 0f;
         }
         else
         {
@@ -89,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Should trigger DASh");
             anim.SetBool("isDashing", true);
+            // dashCoolDown = 1.5f;
             savedVelocity = rb.velocity;
             Debug.Log(savedVelocity);
             float sign = 0;
